@@ -6,5 +6,5 @@
 #include <hdf5.h>
 #include <hdf5_hl.h>
 
-int save(const int N);
+int save(const int N, const bool flag_chunked);
 #endif /* ifndef SAVE_H */

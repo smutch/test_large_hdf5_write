@@ -7,8 +7,8 @@ int main(int argc, char *argv[])
     int i_rank, n_rank;
     MPI_Init(&argc, &argv);
 
-    assert(argc == 2);
-    save(atoi(argv[1]));
+    assert(argc == 3);
+    save(atoi(argv[1]), atoi(argv[2]));
 
     MPI_Finalize();
     return 0;

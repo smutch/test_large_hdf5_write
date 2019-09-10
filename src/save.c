@@ -1,6 +1,6 @@
 #include "save.h"
 
-int save(const int N)
+int save(const int N, const bool flag_chunked)
 {
 
     int i_rank, n_ranks;
@@ -25,9 +25,20 @@ int save(const int N)
     hsize_t mem_dims[3] = { block_size, N, N };
     hid_t memspace_id = H5Screate_simple(3, mem_dims, NULL);
 
-    // create the dataset (NO CHUNKING IN THIS TEST)
+    // create the dataset
+    hid_t dcpl_id = H5P_DEFAULT;
+    if (flag_chunked) {
+        // set the dataset creation property list to use chunking along x-axis
+        dcpl_id = H5Pcreate(H5P_DATASET_CREATE);
+        H5Pset_chunk(dcpl_id, 3, (hsize_t[3]){ 1, N, N });
+    }
+
     hid_t dset_id = H5Dcreate(file_id, "data", H5T_NATIVE_FLOAT, fspace_id,
-        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
+
+    if (flag_chunked) {
+        H5Pclose(dcpl_id);
+    }
 
     // create the property list
     plist_id = H5Pcreate(H5P_DATASET_XFER);
