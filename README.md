@@ -1,7 +1,7 @@
 Testing for a large (~2048^3) PHDF5 write.
 
 
-```sh
+```text
 Usage:
 
     mpirun -n 2 ./test_large_hdf5_write [-c] [-i] [-N <dim>]
