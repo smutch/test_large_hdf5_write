@@ -1,6 +1,7 @@
 # Custom
 build/
 .tags
+test_dump.h5
 
 # Prerequisites
 *.d
