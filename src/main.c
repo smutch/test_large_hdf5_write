@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &i_rank);
 
     // default options
-    int N = 128;
+    long N = 128;
     bool flag_chunked = false;
     bool flag_independent = false;
 
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
                 flag_independent = true;
                 break;
             case 'N':
-                N = atoi(optarg);
+                N = atol(optarg);
                 break;
             case '?':
                 if (optopt == 'N')
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
         }
 
         if (i_rank == 0)
-            printf("N=%d, flag_chunked=%d, flag_independent=%d\n", N, (int)flag_chunked, (int)flag_independent);
+            printf("N=%ld, flag_chunked=%d, flag_independent=%d\n", N, (int)flag_chunked, (int)flag_independent);
     }
 
     save(N, flag_chunked, flag_independent);

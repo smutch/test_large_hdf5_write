@@ -6,5 +6,5 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int save(const int N, const bool flag_chunked, const bool flag_independent);
+int save(const long N, const bool flag_chunked, const bool flag_independent);
 #endif /* ifndef SAVE_H */

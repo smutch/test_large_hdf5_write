@@ -1,15 +1,15 @@
 #include "save.h"
 
-int save(const int N, const bool flag_chunked, const bool flag_independent)
+int save(const long N, const bool flag_chunked, const bool flag_independent)
 {
 
     int i_rank, n_ranks;
     MPI_Comm_rank(MPI_COMM_WORLD, &i_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 
-    const int local_size = (int)(N / n_ranks);
-    assert(local_size * n_ranks == N);
-    const int block_size = 1;
+    const long local_size = (long)(N / n_ranks);
+    assert(local_size * (long)n_ranks == N);
+    const long block_size = 1;
 
     // create the file (in parallel)
     hid_t plist_id = H5Pcreate(H5P_FILE_ACCESS);
@@ -49,19 +49,25 @@ int save(const int N, const bool flag_chunked, const bool flag_independent)
     }
 
     // allocate some space for the dummy data
-    const int n_elem = block_size * N * N;
+    const long n_elem = block_size * N * N;
     float* data = calloc(n_elem, sizeof(float));
 
     // loop through blocks and write some dummy data
-    for (int block_start = i_rank * local_size; block_start < (i_rank + 1) * local_size; block_start += block_size) {
+    for (long block_start = i_rank * local_size; block_start < (i_rank + 1) * local_size; block_start += block_size) {
         // select a hyperslab in the filespace
         hsize_t start[3] = { block_start, 0, 0 };
         hsize_t count[3] = { block_size, N, N };
         H5Sselect_hyperslab(fspace_id, H5S_SELECT_SET, start, NULL, count, NULL);
 
         // create the dummy data
-        for (int ii = 0; ii < n_elem; ii++) {
+        for (long ii = 0; ii < n_elem; ii++) {
             data[ii] = block_start * N * N + ii;
+        }
+
+        // if we are the last rank, lets change our minds and write nothing
+        if (i_rank == n_ranks-1) {
+            H5Sselect_none(fspace_id);
+            H5Sselect_none(memspace_id);
         }
 
         // write the dataset
